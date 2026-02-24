@@ -1,126 +1,485 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VIP Access | Sanctuary</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #050505; /* Deeper midnight */
-            color: #c0c0c0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            touch-action: manipulation;
-        }
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Take My Hand 🌸</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* The Container */
-        .sanctuary-box {
-            position: relative;
-            width: 85vw;
-            height: 70vh;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: radial-gradient(circle at center, #111 0%, #050505 100%);
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
-        }
+    body {
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      font-family: 'DM Sans', sans-serif;
+      position: relative;
+      transition: background 2.5s ease;
+      background: radial-gradient(ellipse at 60% 0%, #0c1e3a 0%, #050d1a 55%, #020810 100%);
+      cursor: default;
+      user-select: none;
+    }
 
-        /* Abstract Silhouette Styles */
-        .silhouette {
-            position: absolute;
-            transition: all 1.5s cubic-bezier(0.19, 1, 0.22, 1);
-            filter: blur(1px);
-        }
+    body.golden {
+      background: radial-gradient(ellipse at 50% 0%, #ff9a3c 0%, #ffcf77 30%, #ffe4a0 60%, #ffd6a5 100%);
+    }
 
-        .girl {
-            width: 100px;
-            height: 250px;
-            background: linear-gradient(180deg, #1a1a1a 0%, #333 100%);
-            border-radius: 40px 40px 10px 10px;
-            z-index: 2;
-        }
+    /* ── Stars (night only) ── */
+    #stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      transition: opacity 2s ease;
+    }
+    body.golden #stars { opacity: 0; }
 
-        .guy {
-            width: 105px;
-            height: 260px;
-            background: linear-gradient(180deg, rgba(249, 138, 199, 0.1) 0%, rgba(249, 138, 199, 0) 100%);
-            border-radius: 40px 40px 10px 10px;
-            z-index: 1;
-            opacity: 0;
-            transform: translateX(40px); /* Hidden behind her to the right */
-        }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: white;
+      animation: twinkle ease-in-out infinite;
+    }
+    @keyframes twinkle {
+      0%,100% { opacity: 0.1; } 50% { opacity: 0.9; }
+    }
 
-        /* Interaction State */
-        .active .guy {
-            opacity: 1;
-            transform: translateX(60px); /* Slides out to hold hand */
-        }
+    /* ── Crescent moon ── */
+    .moon {
+      position: fixed;
+      top: 40px; right: 60px;
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: -16px 16px 0 3px #fefcd7;
+      filter: drop-shadow(0 0 16px rgba(254,252,215,0.5));
+      pointer-events: none;
+      z-index: 2;
+      transition: opacity 2s ease;
+    }
+    body.golden .moon { opacity: 0; }
 
-        .active .girl {
-            box-shadow: 0 0 20px rgba(249, 138, 199, 0.1);
-        }
+    /* ── Sun (golden hour) ── */
+    .sun {
+      position: fixed;
+      top: 50px; left: 50%;
+      transform: translateX(-50%);
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffe566, #ffb347);
+      box-shadow: 0 0 60px 20px rgba(255,180,50,0.5);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 2;
+      transition: opacity 2.5s ease;
+    }
+    body.golden .sun { opacity: 1; }
 
-        /* Floating O2 Particles */
-        .particle {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: white;
-            border-radius: 50%;
-            opacity: 0.2;
-            animation: float 8s infinite linear;
-        }
+    /* ── Ground ── */
+    .ground {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 120px;
+      background: linear-gradient(to top, #1a3a1a, #2d5a2d);
+      z-index: 1;
+      transition: background 2.5s ease;
+    }
+    body.golden .ground {
+      background: linear-gradient(to top, #5a3a1a, #8b6914);
+    }
 
-        @keyframes float {
-            from { transform: translateY(0); }
-            to { transform: translateY(-100vh); }
-        }
+    /* ── Scene container ── */
+    .scene {
+      position: relative;
+      z-index: 10;
+      width: 100vw;
+      max-width: 600px;
+      height: 100vh;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
 
-        .instruction {
-            margin-top: 30px;
-            font-size: 0.7rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            opacity: 0.4;
-            transition: 0.5s;
-        }
+    /* ── Characters ── */
+    .character {
+      position: absolute;
+      bottom: 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-        .active + .instruction {
-            opacity: 0.8;
-            color: #f98ac7;
-        }
-    </style>
+    /* Girl — center */
+    .girl {
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+    }
+
+    /* Guy — starts off screen left, slides in */
+    .guy {
+      left: 50%;
+      transform: translateX(-160%);
+      z-index: 19;
+      transition: transform 1.2s cubic-bezier(0.34, 1.2, 0.64, 1);
+    }
+    .guy.arrived {
+      transform: translateX(-120%);
+    }
+
+    /* SVG figures */
+    .figure { width: 90px; }
+
+    /* Hand tap zone */
+    .hand-zone {
+      position: absolute;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-8%);
+      width: 50px;
+      height: 60px;
+      z-index: 30;
+      cursor: pointer;
+    }
+
+    .hand-hint {
+      position: absolute;
+      bottom: 155px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 0.85rem;
+      color: rgba(254,252,215,0.6);
+      pointer-events: none;
+      z-index: 30;
+      animation: hintPulse 2s ease-in-out infinite;
+      white-space: nowrap;
+      transition: opacity 1s ease;
+    }
+    .hand-hint.hidden { opacity: 0; }
+
+    @keyframes hintPulse {
+      0%,100% { opacity: 0.5; transform: translateX(-50%) translateY(0); }
+      50%      { opacity: 1;   transform: translateX(-50%) translateY(-4px); }
+    }
+
+    /* ── Petals ── */
+    .petal {
+      position: fixed;
+      top: -30px;
+      font-size: 1.2rem;
+      pointer-events: none;
+      z-index: 50;
+      animation: petalFall linear forwards;
+    }
+    @keyframes petalFall {
+      0%   { opacity: 0; transform: translateY(0) rotate(0deg) translateX(0); }
+      10%  { opacity: 1; }
+      90%  { opacity: 0.8; }
+      100% { opacity: 0; transform: translateY(110vh) rotate(720deg) translateX(var(--sway)); }
+    }
+
+    /* ── Message ── */
+    .message-wrap {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 60;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .message-wrap.visible { opacity: 1; }
+
+    .message-card {
+      background: rgba(255,255,255,0.18);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 24px;
+      padding: 2rem 2.5rem;
+      max-width: 340px;
+      width: 88vw;
+      text-align: center;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+      transform: translateY(20px);
+      transition: transform 1s ease, opacity 1s ease;
+    }
+    .message-wrap.visible .message-card {
+      transform: translateY(0);
+    }
+
+    .message-card .msg-icon {
+      font-size: 2.2rem;
+      display: block;
+      margin-bottom: 0.7rem;
+      animation: heartbeat 1.8s ease-in-out infinite;
+    }
+    @keyframes heartbeat {
+      0%,100% { transform: scale(1); }
+      14% { transform: scale(1.2); }
+      28% { transform: scale(1); }
+      42% { transform: scale(1.1); }
+    }
+
+    .message-card h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #7a3030;
+      margin-bottom: 0.6rem;
+    }
+
+    .message-card p {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: #5a2020;
+      line-height: 1.7;
+    }
+
+    .message-card .close-hint {
+      margin-top: 1rem;
+      font-size: 0.72rem;
+      color: rgba(90,32,32,0.5);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ── Hair wind animation ── */
+    @keyframes hairWave {
+      0%,100% { transform: rotate(0deg); }
+      50% { transform: rotate(3deg); }
+    }
+
+    /* ── Glow ring when holding hands ── */
+    .glow-ring {
+      position: fixed;
+      pointer-events: none;
+      z-index: 15;
+      border-radius: 50%;
+      width: 80px; height: 80px;
+      background: radial-gradient(circle, rgba(255,220,100,0.6), transparent);
+      bottom: 130px;
+      left: 50%;
+      transform: translateX(-70%);
+      opacity: 0;
+      transition: opacity 1.5s ease;
+    }
+    .glow-ring.visible { opacity: 1; }
+  </style>
 </head>
 <body>
 
-    <div class="sanctuary-box" id="box" onclick="activate()">
-        <div class="particle" style="left: 20%; animation-delay: 0s;"></div>
-        <div class="particle" style="left: 50%; animation-delay: 2s;"></div>
-        <div class="particle" style="left: 80%; animation-delay: 5s;"></div>
-        
-        <div class="silhouette guy" id="guy"></div>
-        <div class="silhouette girl" id="girl"></div>
+  <div id="stars"></div>
+  <div class="moon"></div>
+  <div class="sun"></div>
+  <div class="ground"></div>
+  <div class="glow-ring" id="glowRing"></div>
+
+  <!-- Tap hint -->
+  <div class="hand-hint" id="hint">✦ tap her hand ✦</div>
+
+  <!-- Hand tap zone (invisible, over girl's hand area) -->
+  <div class="hand-zone" id="handZone" onclick="triggerConnection()"></div>
+
+  <div class="scene">
+
+    <!-- GUY (slides in from left) -->
+    <div class="character guy" id="guy">
+      <svg class="figure" viewBox="0 0 90 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Body shadow -->
+        <ellipse cx="45" cy="195" rx="22" ry="5" fill="rgba(0,0,0,0.15)"/>
+        <!-- Legs -->
+        <rect x="30" y="140" width="12" height="55" rx="6" fill="#2c3e6b"/>
+        <rect x="48" y="140" width="12" height="55" rx="6" fill="#2c3e6b"/>
+        <!-- Shoes -->
+        <ellipse cx="36" cy="194" rx="10" ry="5" fill="#1a1a2e"/>
+        <ellipse cx="54" cy="194" rx="10" ry="5" fill="#1a1a2e"/>
+        <!-- Torso -->
+        <rect x="24" y="85" width="42" height="60" rx="12" fill="#3b5088"/>
+        <!-- Collar -->
+        <path d="M38 85 L45 98 L52 85" stroke="#fff" stroke-width="2" fill="none" opacity="0.6"/>
+        <!-- Left arm (away) -->
+        <rect x="8" y="88" width="14" height="45" rx="7" fill="#3b5088" transform="rotate(-8 8 88)"/>
+        <!-- Right arm (reaching toward girl) -->
+        <rect x="68" y="88" width="14" height="50" rx="7" fill="#3b5088" transform="rotate(12 68 88)"/>
+        <!-- Right hand -->
+        <ellipse cx="82" cy="140" rx="7" ry="8" fill="#f5c5a3" transform="rotate(12 82 140)"/>
+        <!-- Neck -->
+        <rect x="38" y="68" width="14" height="20" rx="7" fill="#f5c5a3"/>
+        <!-- Head -->
+        <ellipse cx="45" cy="52" rx="22" ry="24" fill="#f5c5a3"/>
+        <!-- Hair -->
+        <ellipse cx="45" cy="32" rx="22" ry="12" fill="#2c1a0e"/>
+        <rect x="23" y="30" width="44" height="16" rx="8" fill="#2c1a0e"/>
+        <!-- Eyes -->
+        <ellipse cx="37" cy="52" rx="3" ry="3.5" fill="#2c1a0e"/>
+        <ellipse cx="53" cy="52" rx="3" ry="3.5" fill="#2c1a0e"/>
+        <!-- Eye shine -->
+        <circle cx="38.5" cy="50.5" r="1" fill="white"/>
+        <circle cx="54.5" cy="50.5" r="1" fill="white"/>
+        <!-- Smile -->
+        <path d="M38 60 Q45 66 52 60" stroke="#c0826a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </svg>
     </div>
 
-    <div class="instruction" id="status">Tap to Filter Air</div>
+    <!-- GIRL (center) -->
+    <div class="character girl" id="girl">
+      <svg class="figure" viewBox="0 0 90 210" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Shadow -->
+        <ellipse cx="45" cy="205" rx="22" ry="5" fill="rgba(0,0,0,0.15)"/>
+        <!-- Dress -->
+        <path d="M22 100 Q15 160 20 205 L70 205 Q75 160 68 100 Z" fill="#f4a7b9"/>
+        <path d="M22 100 Q15 160 20 205 L70 205 Q75 160 68 100 Z" fill="url(#dressGrad)"/>
+        <defs>
+          <linearGradient id="dressGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#f9c8d4" stop-opacity="0.5"/>
+            <stop offset="100%" stop-color="#e07a96" stop-opacity="0.3"/>
+          </linearGradient>
+        </defs>
+        <!-- Dress overlay shimmer -->
+        <path d="M35 100 Q32 150 30 205 L50 205 Q48 150 45 100Z" fill="rgba(255,255,255,0.15)"/>
+        <!-- Torso -->
+        <rect x="26" y="80" width="38" height="28" rx="10" fill="#f4a7b9"/>
+        <!-- Left arm (away from guy) -->
+        <rect x="8" y="82" width="13" height="42" rx="6.5" fill="#f5c5a3" transform="rotate(8 8 82)"/>
+        <!-- Left hand -->
+        <ellipse cx="12" cy="126" rx="6.5" ry="7.5" fill="#f5c5a3" transform="rotate(8 12 126)"/>
+        <!-- Right arm (toward guy — will glow) -->
+        <rect x="69" y="82" width="13" height="44" rx="6.5" fill="#f5c5a3" id="girlArm" transform="rotate(-10 69 82)"/>
+        <!-- Right hand — TAP TARGET -->
+        <ellipse cx="77" cy="128" rx="7" ry="8" fill="#f5c5a3" id="girlHand" transform="rotate(-10 77 128)"/>
+        <!-- Neck -->
+        <rect x="38" y="62" width="14" height="22" rx="7" fill="#f5c5a3"/>
+        <!-- Head -->
+        <ellipse cx="45" cy="46" rx="22" ry="24" fill="#f5c5a3"/>
+        <!-- Hair back -->
+        <ellipse cx="45" cy="28" rx="23" ry="14" fill="#3d1f0e"/>
+        <!-- Hair long -->
+        <path d="M22 35 Q10 80 18 130 Q22 90 26 80 Z" fill="#3d1f0e"/>
+        <path d="M68 35 Q80 80 72 130 Q68 90 64 80 Z" fill="#3d1f0e" class="hairStrand"/>
+        <!-- Hair top -->
+        <rect x="22" y="26" width="46" height="18" rx="9" fill="#3d1f0e"/>
+        <!-- Eyes -->
+        <ellipse cx="37" cy="46" rx="3" ry="3.5" fill="#2c1a0e"/>
+        <ellipse cx="53" cy="46" rx="3" ry="3.5" fill="#2c1a0e"/>
+        <!-- Eye shine -->
+        <circle cx="38.5" cy="44.5" r="1" fill="white"/>
+        <circle cx="54.5" cy="44.5" r="1" fill="white"/>
+        <!-- Eyelashes -->
+        <line x1="34" y1="43" x2="32" y2="40" stroke="#2c1a0e" stroke-width="1"/>
+        <line x1="37" y1="42.5" x2="36" y2="39.5" stroke="#2c1a0e" stroke-width="1"/>
+        <line x1="40" y1="43" x2="40" y2="40" stroke="#2c1a0e" stroke-width="1"/>
+        <!-- Blush -->
+        <ellipse cx="31" cy="52" rx="6" ry="3.5" fill="#f4a7b9" opacity="0.5"/>
+        <ellipse cx="59" cy="52" rx="6" ry="3.5" fill="#f4a7b9" opacity="0.5"/>
+        <!-- Smile -->
+        <path d="M38 56 Q45 62 52 56" stroke="#c0826a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <!-- Hair accessory -->
+        <circle cx="58" cy="30" r="4" fill="#f4a7b9"/>
+        <circle cx="58" cy="30" r="2" fill="#e07a96"/>
+      </svg>
+    </div>
 
-    <script>
-        function activate() {
-            const box = document.getElementById('box');
-            const status = document.getElementById('status');
-            const isActive = box.classList.toggle('active');
-            
-            status.innerText = isActive ? "O2 Protocol Active" : "Tap to Filter Air";
-        }
-    </script>
+  </div>
+
+  <!-- Message overlay -->
+  <div class="message-wrap" id="messageWrap" onclick="this.classList.remove('visible')">
+    <div class="message-card">
+      <span class="msg-icon">🌸</span>
+      <h2>I've got you.</h2>
+      <p>Wherever you go, whatever you feel — I just want to be the one walking beside you. No rush. Just us.</p>
+      <p class="close-hint">tap anywhere to continue</p>
+    </div>
+  </div>
+
+  <script>
+    let connected = false;
+
+    function triggerConnection() {
+      if (connected) return;
+      connected = true;
+
+      // Hide hint
+      document.getElementById('hint').classList.add('hidden');
+
+      // Slide guy in
+      document.getElementById('guy').classList.add('arrived');
+
+      // After guy arrives — golden hour + petals + message
+      setTimeout(() => {
+        // Background shift
+        document.body.classList.add('golden');
+
+        // Glow between hands
+        document.getElementById('glowRing').classList.add('visible');
+
+        // Petals
+        startPetals();
+
+        // Message
+        setTimeout(() => {
+          document.getElementById('messageWrap').classList.add('visible');
+        }, 1200);
+
+      }, 1000);
+    }
+
+    function startPetals() {
+      const petalEmojis = ['🌸', '🌷', '✿', '❀', '🌺', '🌼'];
+      let count = 0;
+      const interval = setInterval(() => {
+        spawnPetal(petalEmojis[Math.floor(Math.random() * petalEmojis.length)]);
+        count++;
+        if (count > 60) clearInterval(interval);
+      }, 120);
+
+      // Continuous gentle petals after
+      setTimeout(() => {
+        setInterval(() => {
+          spawnPetal(petalEmojis[Math.floor(Math.random() * petalEmojis.length)]);
+        }, 600);
+      }, 8000);
+    }
+
+    function spawnPetal(emoji) {
+      const p = document.createElement('span');
+      p.className = 'petal';
+      p.textContent = emoji;
+      const left = 10 + Math.random() * 80;
+      const dur  = 4 + Math.random() * 4;
+      const sway = (Math.random() - 0.5) * 200;
+      p.style.cssText = `
+        left: ${left}vw;
+        font-size: ${0.8 + Math.random() * 0.8}rem;
+        animation-duration: ${dur}s;
+        animation-delay: ${Math.random() * 1}s;
+        --sway: ${sway}px;
+      `;
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), (dur + 1.5) * 1000);
+    }
+
+    // Stars
+    const starsEl = document.getElementById('stars');
+    for (let i = 0; i < 120; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 2.2 + 0.4;
+      s.style.cssText = `
+        width:${size}px; height:${size}px;
+        top:${Math.random()*100}%; left:${Math.random()*100}%;
+        animation-duration:${2+Math.random()*4}s;
+        animation-delay:${Math.random()*5}s;
+      `;
+      starsEl.appendChild(s);
+    }
+  </script>
 </body>
 </html>
