@@ -27,251 +27,182 @@
       background: radial-gradient(ellipse at 50% 0%, #ff9a3c 0%, #ffcf77 30%, #ffe4a0 60%, #ffd6a5 100%);
     }
 
-    /* ── Stars (night only) ── */
     #stars {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
       transition: opacity 2s ease;
     }
     body.golden #stars { opacity: 0; }
 
     .star {
-      position: absolute;
-      border-radius: 50%;
-      background: white;
+      position: absolute; border-radius: 50%; background: white;
       animation: twinkle ease-in-out infinite;
     }
     @keyframes twinkle {
       0%,100% { opacity: 0.1; } 50% { opacity: 0.9; }
     }
 
-    /* ── Crescent moon ── */
     .moon {
-      position: fixed;
-      top: 40px; right: 60px;
-      width: 60px; height: 60px;
-      border-radius: 50%;
+      position: fixed; top: 40px; right: 60px;
+      width: 60px; height: 60px; border-radius: 50%;
       background: transparent;
       box-shadow: -16px 16px 0 3px #fefcd7;
       filter: drop-shadow(0 0 16px rgba(254,252,215,0.5));
-      pointer-events: none;
-      z-index: 2;
+      pointer-events: none; z-index: 2;
       transition: opacity 2s ease;
     }
     body.golden .moon { opacity: 0; }
 
-    /* ── Sun (golden hour) ── */
     .sun {
-      position: fixed;
-      top: 50px; left: 50%;
+      position: fixed; top: 50px; left: 50%;
       transform: translateX(-50%);
-      width: 80px; height: 80px;
-      border-radius: 50%;
+      width: 80px; height: 80px; border-radius: 50%;
       background: radial-gradient(circle, #ffe566, #ffb347);
       box-shadow: 0 0 60px 20px rgba(255,180,50,0.5);
-      opacity: 0;
-      pointer-events: none;
-      z-index: 2;
+      opacity: 0; pointer-events: none; z-index: 2;
       transition: opacity 2.5s ease;
     }
     body.golden .sun { opacity: 1; }
 
-    /* ── Ground ── */
     .ground {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      height: 120px;
+      position: fixed; bottom: 0; left: 0; right: 0;
+      height: 110px;
       background: linear-gradient(to top, #1a3a1a, #2d5a2d);
-      z-index: 1;
-      transition: background 2.5s ease;
+      z-index: 1; transition: background 2.5s ease;
     }
     body.golden .ground {
       background: linear-gradient(to top, #5a3a1a, #8b6914);
     }
 
-    /* ── Scene container ── */
+    /* ── Scene ── */
     .scene {
-      position: relative;
-      z-index: 10;
-      width: 100vw;
-      max-width: 600px;
-      height: 100vh;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
+      position: relative; z-index: 10;
+      width: 100vw; max-width: 600px; height: 100vh;
+      display: flex; align-items: flex-end; justify-content: center;
     }
 
-    /* ── Characters ── */
+    /* Both figures use same SVG viewBox 60x280, same CSS width */
+    .figure { width: 60px; }
+
     .character {
       position: absolute;
       bottom: 100px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      display: flex; flex-direction: column; align-items: center;
     }
 
-    /* Girl — center */
+    /* Girl — dead center */
     .girl {
       left: 50%;
       transform: translateX(-50%);
       z-index: 20;
     }
 
-    /* Guy — starts off screen left, slides in */
+    /* Guy — off screen left, slides to just left of girl */
     .guy {
       left: 50%;
-      transform: translateX(-160%);
+      transform: translateX(-200%);
       z-index: 19;
-      transition: transform 1.2s cubic-bezier(0.34, 1.2, 0.64, 1);
+      transition: transform 1.4s cubic-bezier(0.34, 1.1, 0.64, 1);
     }
     .guy.arrived {
-      transform: translateX(-120%);
+      /* sits just to left of girl: girl is at -50% of her own width,
+         guy is same width, so -50% - 100% = -150% puts him flush beside her */
+      transform: translateX(-148%);
     }
 
-    /* SVG figures */
-    .figure { width: 90px; }
-
-    /* Hand tap zone */
+    /* Tap zone over girl's right hand */
     .hand-zone {
       position: absolute;
-      bottom: 100px;
+      bottom: 128px;
       left: 50%;
-      transform: translateX(-8%);
-      width: 50px;
-      height: 60px;
-      z-index: 30;
-      cursor: pointer;
+      transform: translateX(10px);
+      width: 44px; height: 50px;
+      z-index: 30; cursor: pointer;
     }
 
     .hand-hint {
       position: absolute;
-      bottom: 155px;
-      left: 50%;
+      bottom: 190px; left: 50%;
       transform: translateX(-50%);
       font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: 0.85rem;
-      color: rgba(254,252,215,0.6);
-      pointer-events: none;
-      z-index: 30;
+      font-style: italic; font-size: 0.85rem;
+      color: rgba(254,252,215,0.65);
+      pointer-events: none; z-index: 30;
       animation: hintPulse 2s ease-in-out infinite;
-      white-space: nowrap;
-      transition: opacity 1s ease;
+      white-space: nowrap; transition: opacity 1s ease;
     }
     .hand-hint.hidden { opacity: 0; }
-
     @keyframes hintPulse {
       0%,100% { opacity: 0.5; transform: translateX(-50%) translateY(0); }
-      50%      { opacity: 1;   transform: translateX(-50%) translateY(-4px); }
+      50%      { opacity: 1;   transform: translateX(-50%) translateY(-5px); }
     }
 
-    /* ── Petals ── */
+    /* Petals */
     .petal {
-      position: fixed;
-      top: -30px;
-      font-size: 1.2rem;
-      pointer-events: none;
-      z-index: 50;
+      position: fixed; top: -30px;
+      pointer-events: none; z-index: 50;
       animation: petalFall linear forwards;
     }
     @keyframes petalFall {
-      0%   { opacity: 0; transform: translateY(0) rotate(0deg) translateX(0); }
+      0%   { opacity: 0; transform: translateY(0) rotate(0deg); }
       10%  { opacity: 1; }
       90%  { opacity: 0.8; }
-      100% { opacity: 0; transform: translateY(110vh) rotate(720deg) translateX(var(--sway)); }
+      100% { opacity: 0; transform: translateY(110vh) rotate(600deg) translateX(var(--sway)); }
     }
 
-    /* ── Message ── */
-    .message-wrap {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 60;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 1s ease;
+    /* Glow */
+    .glow-ring {
+      position: fixed; pointer-events: none; z-index: 15;
+      border-radius: 50%; width: 70px; height: 70px;
+      background: radial-gradient(circle, rgba(255,220,100,0.55), transparent);
+      bottom: 128px; left: 50%; transform: translateX(-60%);
+      opacity: 0; transition: opacity 1.5s ease;
     }
-    .message-wrap.visible { opacity: 1; }
+    .glow-ring.visible { opacity: 1; }
+
+    /* Message */
+    .message-wrap {
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 60; pointer-events: none;
+      opacity: 0; transition: opacity 1s ease;
+    }
+    .message-wrap.visible { opacity: 1; pointer-events: all; }
 
     .message-card {
       background: rgba(255,255,255,0.18);
       backdrop-filter: blur(20px);
       border: 1px solid rgba(255,255,255,0.4);
-      border-radius: 24px;
-      padding: 2rem 2.5rem;
-      max-width: 340px;
-      width: 88vw;
-      text-align: center;
+      border-radius: 24px; padding: 2rem 2.5rem;
+      max-width: 340px; width: 88vw; text-align: center;
       box-shadow: 0 8px 40px rgba(0,0,0,0.2);
       transform: translateY(20px);
-      transition: transform 1s ease, opacity 1s ease;
+      transition: transform 1s ease;
     }
-    .message-wrap.visible .message-card {
-      transform: translateY(0);
-    }
+    .message-wrap.visible .message-card { transform: translateY(0); }
 
-    .message-card .msg-icon {
-      font-size: 2.2rem;
-      display: block;
-      margin-bottom: 0.7rem;
+    .msg-icon {
+      font-size: 2.2rem; display: block; margin-bottom: 0.7rem;
       animation: heartbeat 1.8s ease-in-out infinite;
     }
     @keyframes heartbeat {
       0%,100% { transform: scale(1); }
       14% { transform: scale(1.2); }
-      28% { transform: scale(1); }
       42% { transform: scale(1.1); }
     }
 
     .message-card h2 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.6rem;
-      font-weight: 600;
-      color: #7a3030;
-      margin-bottom: 0.6rem;
+      font-size: 1.6rem; font-weight: 600; color: #7a3030; margin-bottom: 0.6rem;
     }
-
     .message-card p {
       font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: 1rem;
-      color: #5a2020;
-      line-height: 1.7;
+      font-style: italic; font-size: 1rem; color: #5a2020; line-height: 1.7;
     }
-
-    .message-card .close-hint {
-      margin-top: 1rem;
-      font-size: 0.72rem;
-      color: rgba(90,32,32,0.5);
-      letter-spacing: 1px;
-      text-transform: uppercase;
+    .close-hint {
+      margin-top: 1rem; font-size: 0.72rem;
+      color: rgba(90,32,32,0.45); letter-spacing: 1px; text-transform: uppercase;
     }
-
-    /* ── Hair wind animation ── */
-    @keyframes hairWave {
-      0%,100% { transform: rotate(0deg); }
-      50% { transform: rotate(3deg); }
-    }
-
-    /* ── Glow ring when holding hands ── */
-    .glow-ring {
-      position: fixed;
-      pointer-events: none;
-      z-index: 15;
-      border-radius: 50%;
-      width: 80px; height: 80px;
-      background: radial-gradient(circle, rgba(255,220,100,0.6), transparent);
-      bottom: 130px;
-      left: 50%;
-      transform: translateX(-70%);
-      opacity: 0;
-      transition: opacity 1.5s ease;
-    }
-    .glow-ring.visible { opacity: 1; }
   </style>
 </head>
 <body>
@@ -281,115 +212,135 @@
   <div class="sun"></div>
   <div class="ground"></div>
   <div class="glow-ring" id="glowRing"></div>
-
-  <!-- Tap hint -->
   <div class="hand-hint" id="hint">✦ tap her hand ✦</div>
-
-  <!-- Hand tap zone (invisible, over girl's hand area) -->
   <div class="hand-zone" id="handZone" onclick="triggerConnection()"></div>
 
   <div class="scene">
 
-    <!-- GUY (slides in from left) -->
+    <!-- ══ GUY — slim, tall, same viewBox as girl ══ -->
     <div class="character guy" id="guy">
-      <svg class="figure" viewBox="0 0 90 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Body shadow -->
-        <ellipse cx="45" cy="195" rx="22" ry="5" fill="rgba(0,0,0,0.15)"/>
-        <!-- Legs -->
-        <rect x="30" y="140" width="12" height="55" rx="6" fill="#2c3e6b"/>
-        <rect x="48" y="140" width="12" height="55" rx="6" fill="#2c3e6b"/>
-        <!-- Shoes -->
-        <ellipse cx="36" cy="194" rx="10" ry="5" fill="#1a1a2e"/>
-        <ellipse cx="54" cy="194" rx="10" ry="5" fill="#1a1a2e"/>
-        <!-- Torso -->
-        <rect x="24" y="85" width="42" height="60" rx="12" fill="#3b5088"/>
-        <!-- Collar -->
-        <path d="M38 85 L45 98 L52 85" stroke="#fff" stroke-width="2" fill="none" opacity="0.6"/>
-        <!-- Left arm (away) -->
-        <rect x="8" y="88" width="14" height="45" rx="7" fill="#3b5088" transform="rotate(-8 8 88)"/>
-        <!-- Right arm (reaching toward girl) -->
-        <rect x="68" y="88" width="14" height="50" rx="7" fill="#3b5088" transform="rotate(12 68 88)"/>
-        <!-- Right hand -->
-        <ellipse cx="82" cy="140" rx="7" ry="8" fill="#f5c5a3" transform="rotate(12 82 140)"/>
+      <!--
+        ViewBox: 60 wide × 280 tall
+        Head top ~y=10, feet ~y=275
+        Slim: shoulders ~18px wide, hips ~14px wide
+        He faces RIGHT (toward girl), his RIGHT hand reaches toward her (right side of SVG)
+      -->
+      <svg class="figure" viewBox="0 0 60 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Shadow -->
+        <ellipse cx="30" cy="274" rx="14" ry="4" fill="rgba(0,0,0,0.18)"/>
+        <!-- Left leg -->
+        <rect x="23" y="190" width="7" height="82" rx="3.5" fill="#2c3e6b"/>
+        <!-- Right leg -->
+        <rect x="32" y="190" width="7" height="82" rx="3.5" fill="#253462"/>
+        <!-- Left shoe -->
+        <ellipse cx="26" cy="272" rx="8" ry="3.5" fill="#1a1a2e"/>
+        <!-- Right shoe -->
+        <ellipse cx="36" cy="272" rx="8" ry="3.5" fill="#1a1a2e"/>
+        <!-- Torso — slim -->
+        <rect x="21" y="110" width="18" height="84" rx="6" fill="#3b5088"/>
+        <!-- Belt -->
+        <rect x="21" y="185" width="18" height="4" rx="2" fill="#1a2a50"/>
+        <!-- Collar V -->
+        <path d="M27 110 L30 122 L33 110" stroke="white" stroke-width="1.5" fill="none" opacity="0.5"/>
+        <!-- Left arm — hangs down slightly -->
+        <rect x="13" y="112" width="7" height="52" rx="3.5" fill="#3b5088" transform="rotate(6 13 112)"/>
+        <!-- Left hand -->
+        <ellipse cx="11" cy="165" rx="4.5" ry="5" fill="#f0b88a" transform="rotate(6 11 165)"/>
+        <!-- Right arm — reaches toward girl (right side) -->
+        <rect x="40" y="112" width="7" height="58" rx="3.5" fill="#3b5088" transform="rotate(-10 40 112)"/>
+        <!-- Right hand reaching -->
+        <ellipse cx="49" cy="172" rx="4.5" ry="5.5" fill="#f0b88a" transform="rotate(-10 49 172)"/>
         <!-- Neck -->
-        <rect x="38" y="68" width="14" height="20" rx="7" fill="#f5c5a3"/>
-        <!-- Head -->
-        <ellipse cx="45" cy="52" rx="22" ry="24" fill="#f5c5a3"/>
-        <!-- Hair -->
-        <ellipse cx="45" cy="32" rx="22" ry="12" fill="#2c1a0e"/>
-        <rect x="23" y="30" width="44" height="16" rx="8" fill="#2c1a0e"/>
-        <!-- Eyes -->
-        <ellipse cx="37" cy="52" rx="3" ry="3.5" fill="#2c1a0e"/>
-        <ellipse cx="53" cy="52" rx="3" ry="3.5" fill="#2c1a0e"/>
-        <!-- Eye shine -->
-        <circle cx="38.5" cy="50.5" r="1" fill="white"/>
-        <circle cx="54.5" cy="50.5" r="1" fill="white"/>
+        <rect x="27" y="92" width="7" height="20" rx="3.5" fill="#f0b88a"/>
+        <!-- Head — slightly smaller (guy slightly taller) -->
+        <ellipse cx="30" cy="72" rx="16" ry="18" fill="#f0b88a"/>
+        <!-- Hair — short dark -->
+        <ellipse cx="30" cy="57" rx="16" ry="9" fill="#2c1a0e"/>
+        <rect x="14" y="55" width="32" height="12" rx="6" fill="#2c1a0e"/>
+        <!-- Side hair -->
+        <rect x="14" y="60" width="5" height="14" rx="2.5" fill="#2c1a0e"/>
+        <rect x="41" y="60" width="5" height="12" rx="2.5" fill="#2c1a0e"/>
+        <!-- Eyes — facing right slightly -->
+        <ellipse cx="25" cy="72" rx="2.2" ry="2.5" fill="#2c1a0e"/>
+        <ellipse cx="35" cy="72" rx="2.2" ry="2.5" fill="#2c1a0e"/>
+        <circle cx="25.8" cy="71.2" r="0.8" fill="white"/>
+        <circle cx="35.8" cy="71.2" r="0.8" fill="white"/>
+        <!-- Eyebrows -->
+        <path d="M22 68 Q25 66.5 28 68" stroke="#2c1a0e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <path d="M32 68 Q35 66.5 38 68" stroke="#2c1a0e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
         <!-- Smile -->
-        <path d="M38 60 Q45 66 52 60" stroke="#c0826a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M25 79 Q30 84 35 79" stroke="#c07050" stroke-width="1.2" fill="none" stroke-linecap="round"/>
       </svg>
     </div>
 
-    <!-- GIRL (center) -->
+    <!-- ══ GIRL — slim, tall, same viewBox ══ -->
     <div class="character girl" id="girl">
-      <svg class="figure" viewBox="0 0 90 210" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Shadow -->
-        <ellipse cx="45" cy="205" rx="22" ry="5" fill="rgba(0,0,0,0.15)"/>
-        <!-- Dress -->
-        <path d="M22 100 Q15 160 20 205 L70 205 Q75 160 68 100 Z" fill="#f4a7b9"/>
-        <path d="M22 100 Q15 160 20 205 L70 205 Q75 160 68 100 Z" fill="url(#dressGrad)"/>
+      <!--
+        ViewBox: 60 wide × 280 tall
+        Same height proportion as guy
+        She faces LEFT (toward guy), her LEFT hand reaches toward him (left side of SVG)
+      -->
+      <svg class="figure" viewBox="0 0 60 280" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <linearGradient id="dressGrad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#f9c8d4" stop-opacity="0.5"/>
-            <stop offset="100%" stop-color="#e07a96" stop-opacity="0.3"/>
+          <linearGradient id="dg" x1="0" y1="0" x2="0.3" y2="1">
+            <stop offset="0%" stop-color="#f9c8d4" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#d06080" stop-opacity="0.2"/>
           </linearGradient>
         </defs>
-        <!-- Dress overlay shimmer -->
-        <path d="M35 100 Q32 150 30 205 L50 205 Q48 150 45 100Z" fill="rgba(255,255,255,0.15)"/>
-        <!-- Torso -->
-        <rect x="26" y="80" width="38" height="28" rx="10" fill="#f4a7b9"/>
-        <!-- Left arm (away from guy) -->
-        <rect x="8" y="82" width="13" height="42" rx="6.5" fill="#f5c5a3" transform="rotate(8 8 82)"/>
-        <!-- Left hand -->
-        <ellipse cx="12" cy="126" rx="6.5" ry="7.5" fill="#f5c5a3" transform="rotate(8 12 126)"/>
-        <!-- Right arm (toward guy — will glow) -->
-        <rect x="69" y="82" width="13" height="44" rx="6.5" fill="#f5c5a3" id="girlArm" transform="rotate(-10 69 82)"/>
-        <!-- Right hand — TAP TARGET -->
-        <ellipse cx="77" cy="128" rx="7" ry="8" fill="#f5c5a3" id="girlHand" transform="rotate(-10 77 128)"/>
+        <!-- Shadow -->
+        <ellipse cx="30" cy="274" rx="13" ry="4" fill="rgba(0,0,0,0.18)"/>
+        <!-- Dress — slim A-line -->
+        <path d="M22 138 Q16 200 18 274 L42 274 Q44 200 38 138 Z" fill="#f4a7b9"/>
+        <path d="M22 138 Q16 200 18 274 L42 274 Q44 200 38 138 Z" fill="url(#dg)"/>
+        <!-- Dress shimmer -->
+        <path d="M28 138 Q26 200 26 274 L32 274 Q32 200 30 138Z" fill="rgba(255,255,255,0.12)"/>
+        <!-- Dress waist -->
+        <ellipse cx="30" cy="138" rx="9" ry="3" fill="#e07a96" opacity="0.4"/>
+        <!-- Torso — slim -->
+        <rect x="22" y="108" width="16" height="34" rx="6" fill="#f4a7b9"/>
+        <!-- Right arm — hangs slightly (away from guy, right side) -->
+        <rect x="39" y="110" width="6" height="50" rx="3" fill="#f5c5a3" transform="rotate(-6 39 110)"/>
+        <!-- Right hand -->
+        <ellipse cx="46" cy="162" rx="4" ry="4.8" fill="#f5c5a3" transform="rotate(-6 46 162)"/>
+        <!-- Left arm — reaches toward guy (left side) TAP TARGET AREA -->
+        <rect x="15" y="110" width="6" height="54" rx="3" fill="#f5c5a3" transform="rotate(8 15 110)" id="girlArm"/>
+        <!-- Left hand — TAP HERE -->
+        <ellipse cx="11" cy="166" rx="4.5" ry="5.2" fill="#f5c5a3" transform="rotate(8 11 166)" id="girlHand"/>
         <!-- Neck -->
-        <rect x="38" y="62" width="14" height="22" rx="7" fill="#f5c5a3"/>
+        <rect x="27" y="90" width="7" height="20" rx="3.5" fill="#f5c5a3"/>
         <!-- Head -->
-        <ellipse cx="45" cy="46" rx="22" ry="24" fill="#f5c5a3"/>
-        <!-- Hair back -->
-        <ellipse cx="45" cy="28" rx="23" ry="14" fill="#3d1f0e"/>
-        <!-- Hair long -->
-        <path d="M22 35 Q10 80 18 130 Q22 90 26 80 Z" fill="#3d1f0e"/>
-        <path d="M68 35 Q80 80 72 130 Q68 90 64 80 Z" fill="#3d1f0e" class="hairStrand"/>
+        <ellipse cx="30" cy="70" rx="16" ry="18" fill="#f5c5a3"/>
+        <!-- Hair back layer -->
+        <path d="M14 65 Q6 120 14 190 Q18 130 22 115 Z" fill="#3d1f0e"/>
+        <path d="M46 65 Q54 120 46 190 Q42 130 38 115 Z" fill="#3d1f0e"/>
         <!-- Hair top -->
-        <rect x="22" y="26" width="46" height="18" rx="9" fill="#3d1f0e"/>
-        <!-- Eyes -->
-        <ellipse cx="37" cy="46" rx="3" ry="3.5" fill="#2c1a0e"/>
-        <ellipse cx="53" cy="46" rx="3" ry="3.5" fill="#2c1a0e"/>
-        <!-- Eye shine -->
-        <circle cx="38.5" cy="44.5" r="1" fill="white"/>
-        <circle cx="54.5" cy="44.5" r="1" fill="white"/>
-        <!-- Eyelashes -->
-        <line x1="34" y1="43" x2="32" y2="40" stroke="#2c1a0e" stroke-width="1"/>
-        <line x1="37" y1="42.5" x2="36" y2="39.5" stroke="#2c1a0e" stroke-width="1"/>
-        <line x1="40" y1="43" x2="40" y2="40" stroke="#2c1a0e" stroke-width="1"/>
+        <ellipse cx="30" cy="55" rx="17" ry="10" fill="#3d1f0e"/>
+        <rect x="13" y="52" width="34" height="16" rx="8" fill="#3d1f0e"/>
+        <!-- Hair side strands -->
+        <path d="M13 68 Q8 100 12 140 Q15 100 18 88Z" fill="#3d1f0e"/>
+        <!-- Eyes — facing left -->
+        <ellipse cx="24" cy="70" rx="2.2" ry="2.5" fill="#2c1a0e"/>
+        <ellipse cx="34" cy="70" rx="2.2" ry="2.5" fill="#2c1a0e"/>
+        <circle cx="24.8" cy="69.2" r="0.8" fill="white"/>
+        <circle cx="34.8" cy="69.2" r="0.8" fill="white"/>
+        <!-- Eyelashes (upper) -->
+        <line x1="21.5" y1="67.5" x2="20" y2="65" stroke="#2c1a0e" stroke-width="0.9"/>
+        <line x1="24" y1="67" x2="23" y2="64.5" stroke="#2c1a0e" stroke-width="0.9"/>
+        <line x1="26.5" y1="67.5" x2="26" y2="65" stroke="#2c1a0e" stroke-width="0.9"/>
         <!-- Blush -->
-        <ellipse cx="31" cy="52" rx="6" ry="3.5" fill="#f4a7b9" opacity="0.5"/>
-        <ellipse cx="59" cy="52" rx="6" ry="3.5" fill="#f4a7b9" opacity="0.5"/>
+        <ellipse cx="20" cy="75" rx="5" ry="2.5" fill="#f4a7b9" opacity="0.45"/>
+        <ellipse cx="40" cy="75" rx="5" ry="2.5" fill="#f4a7b9" opacity="0.45"/>
         <!-- Smile -->
-        <path d="M38 56 Q45 62 52 56" stroke="#c0826a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <!-- Hair accessory -->
-        <circle cx="58" cy="30" r="4" fill="#f4a7b9"/>
-        <circle cx="58" cy="30" r="2" fill="#e07a96"/>
+        <path d="M24 78 Q30 84 36 78" stroke="#c0826a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <!-- Hair pin -->
+        <circle cx="42" cy="54" r="3.5" fill="#f4a7b9"/>
+        <circle cx="42" cy="54" r="1.8" fill="#e07a96"/>
       </svg>
     </div>
 
   </div>
 
-  <!-- Message overlay -->
+  <!-- Message -->
   <div class="message-wrap" id="messageWrap" onclick="this.classList.remove('visible')">
     <div class="message-card">
       <span class="msg-icon">🌸</span>
@@ -406,64 +357,45 @@
       if (connected) return;
       connected = true;
 
-      // Hide hint
       document.getElementById('hint').classList.add('hidden');
-
-      // Slide guy in
       document.getElementById('guy').classList.add('arrived');
 
-      // After guy arrives — golden hour + petals + message
       setTimeout(() => {
-        // Background shift
         document.body.classList.add('golden');
-
-        // Glow between hands
         document.getElementById('glowRing').classList.add('visible');
-
-        // Petals
         startPetals();
-
-        // Message
         setTimeout(() => {
           document.getElementById('messageWrap').classList.add('visible');
-        }, 1200);
-
-      }, 1000);
+        }, 1400);
+      }, 1100);
     }
 
     function startPetals() {
-      const petalEmojis = ['🌸', '🌷', '✿', '❀', '🌺', '🌼'];
+      const emojis = ['🌸','🌷','🌺','✿','❀','🌼'];
       let count = 0;
-      const interval = setInterval(() => {
-        spawnPetal(petalEmojis[Math.floor(Math.random() * petalEmojis.length)]);
-        count++;
-        if (count > 60) clearInterval(interval);
-      }, 120);
-
-      // Continuous gentle petals after
+      const burst = setInterval(() => {
+        spawnPetal(emojis[Math.floor(Math.random()*emojis.length)]);
+        if (++count > 55) clearInterval(burst);
+      }, 110);
       setTimeout(() => {
-        setInterval(() => {
-          spawnPetal(petalEmojis[Math.floor(Math.random() * petalEmojis.length)]);
-        }, 600);
-      }, 8000);
+        setInterval(() => spawnPetal(emojis[Math.floor(Math.random()*emojis.length)]), 700);
+      }, 7000);
     }
 
     function spawnPetal(emoji) {
       const p = document.createElement('span');
       p.className = 'petal';
       p.textContent = emoji;
-      const left = 10 + Math.random() * 80;
-      const dur  = 4 + Math.random() * 4;
-      const sway = (Math.random() - 0.5) * 200;
+      const dur = 4 + Math.random() * 4;
       p.style.cssText = `
-        left: ${left}vw;
-        font-size: ${0.8 + Math.random() * 0.8}rem;
-        animation-duration: ${dur}s;
-        animation-delay: ${Math.random() * 1}s;
-        --sway: ${sway}px;
+        left:${10+Math.random()*80}vw;
+        font-size:${0.7+Math.random()*0.7}rem;
+        animation-duration:${dur}s;
+        animation-delay:${Math.random()*0.8}s;
+        --sway:${(Math.random()-0.5)*180}px;
       `;
       document.body.appendChild(p);
-      setTimeout(() => p.remove(), (dur + 1.5) * 1000);
+      setTimeout(() => p.remove(), (dur+1.5)*1000);
     }
 
     // Stars
@@ -471,13 +403,8 @@
     for (let i = 0; i < 120; i++) {
       const s = document.createElement('div');
       s.className = 'star';
-      const size = Math.random() * 2.2 + 0.4;
-      s.style.cssText = `
-        width:${size}px; height:${size}px;
-        top:${Math.random()*100}%; left:${Math.random()*100}%;
-        animation-duration:${2+Math.random()*4}s;
-        animation-delay:${Math.random()*5}s;
-      `;
+      const sz = Math.random()*2+0.4;
+      s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-duration:${2+Math.random()*4}s;animation-delay:${Math.random()*5}s;`;
       starsEl.appendChild(s);
     }
   </script>
