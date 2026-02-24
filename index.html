@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VIP Access | Sanctuary</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #050505; /* Deeper midnight */
+            color: #c0c0c0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            touch-action: manipulation;
+        }
+
+        /* The Container */
+        .sanctuary-box {
+            position: relative;
+            width: 85vw;
+            height: 70vh;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #111 0%, #050505 100%);
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        /* Abstract Silhouette Styles */
+        .silhouette {
+            position: absolute;
+            transition: all 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+            filter: blur(1px);
+        }
+
+        .girl {
+            width: 100px;
+            height: 250px;
+            background: linear-gradient(180deg, #1a1a1a 0%, #333 100%);
+            border-radius: 40px 40px 10px 10px;
+            z-index: 2;
+        }
+
+        .guy {
+            width: 105px;
+            height: 260px;
+            background: linear-gradient(180deg, rgba(249, 138, 199, 0.1) 0%, rgba(249, 138, 199, 0) 100%);
+            border-radius: 40px 40px 10px 10px;
+            z-index: 1;
+            opacity: 0;
+            transform: translateX(40px); /* Hidden behind her to the right */
+        }
+
+        /* Interaction State */
+        .active .guy {
+            opacity: 1;
+            transform: translateX(60px); /* Slides out to hold hand */
+        }
+
+        .active .girl {
+            box-shadow: 0 0 20px rgba(249, 138, 199, 0.1);
+        }
+
+        /* Floating O2 Particles */
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: float 8s infinite linear;
+        }
+
+        @keyframes float {
+            from { transform: translateY(0); }
+            to { transform: translateY(-100vh); }
+        }
+
+        .instruction {
+            margin-top: 30px;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            opacity: 0.4;
+            transition: 0.5s;
+        }
+
+        .active + .instruction {
+            opacity: 0.8;
+            color: #f98ac7;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sanctuary-box" id="box" onclick="activate()">
+        <div class="particle" style="left: 20%; animation-delay: 0s;"></div>
+        <div class="particle" style="left: 50%; animation-delay: 2s;"></div>
+        <div class="particle" style="left: 80%; animation-delay: 5s;"></div>
+        
+        <div class="silhouette guy" id="guy"></div>
+        <div class="silhouette girl" id="girl"></div>
+    </div>
+
+    <div class="instruction" id="status">Tap to Filter Air</div>
+
+    <script>
+        function activate() {
+            const box = document.getElementById('box');
+            const status = document.getElementById('status');
+            const isActive = box.classList.toggle('active');
+            
+            status.innerText = isActive ? "O2 Protocol Active" : "Tap to Filter Air";
+        }
+    </script>
+</body>
+</html>
